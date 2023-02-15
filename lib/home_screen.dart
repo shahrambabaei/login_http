@@ -34,8 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  TextEditingController _userController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _userController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   Future<LoginData>? _futureAlbum;
   @override
   Widget build(BuildContext context) {
