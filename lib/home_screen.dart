@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Set<String> namesList = {};
   Future<LoginData> postData(
       String userName, String password, bool isRememberMe) async {
     var url = Uri.parse('http://84.241.34.41:7007/api/v1/AuthApi/LoginAsync');
@@ -28,7 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
         }));
 
     if (response.statusCode == 200) {
-      return LoginData.fromJson(jsonDecode(response.body));
+      final parsed = LoginData.fromJson(jsonDecode(response.body));
+
+      for (var i = 0; i < parsed.result.pages.length; i++) {
+        namesList.add(parsed.result.pages[i].pageCategoryName);
+      }
+      log(namesList.toString());
+      return parsed;
     } else {
       return throw Exception();
     }
@@ -97,13 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (c, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
-                itemCount: snapshot.data!.result.pages.length,
+                itemCount: namesList.length,
                 itemBuilder: (c, i) {
                   return ElevatedButton(
-                      onPressed: () {},
-                      child: Text(snapshot.data!.result.pages[i].name));
+                      onPressed: () {}, child: Text(namesList.elementAt(i)));
                 });
-           
           } else {
             return const Center(child: CircularProgressIndicator());
           }
